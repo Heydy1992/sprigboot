@@ -3,6 +3,8 @@ package com.example.productos.controller;
 import com.example.productos.model.Producto;
 import com.example.productos.service.ProductoService;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +14,9 @@ import java.util.Locale;
 @RestController
 @RequestMapping("/api/productos")
 @RequiredArgsConstructor
+
 public class ProductoController {
+@Autowired
 private final ProductoService service;
 private final MessageSource messageSource;
 @GetMapping
@@ -39,6 +43,8 @@ return service.actualizar(id, producto)
 public Mono<Void> eliminar(@PathVariable String id) {
 return service.eliminar(id);
 }
+
+
 @GetMapping("/mensaje")
 public String mensaje(@RequestParam(name = "lang", defaultValue = "es") String lang) {
 Locale locale = Locale.forLanguageTag(lang);
