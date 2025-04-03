@@ -13,6 +13,9 @@ francés), y conexión con **MongoDB** usando operaciones CRUD.
 - Internacionalización (i18n)
 - Postman (para pruebas)
 - Lombok
+-Tests unitarios con JUnit y Mockito.
+-Tests de integración con WebTestClient y Mongo real / remoto.
+-Docker (para contenedores)
 ---
 ## Internacionalización
 Endpoint de prueba:
@@ -33,14 +36,19 @@ PUT `/api/productos/{id}` Actualizar producto por ID
 DELETE `/api/productos/{id}` Eliminar producto por ID
 ---
 ## Pruebas con Postman
+
 1. Usa autenticación básica con el usuario y clave.
 2. Prueba el CRUD y el endpoint `/mensaje?lang=fr`.
 ---
+
+
 ## Requisitos para ejecutar
 - Java 17
 - Maven 3.8+
 - MongoDB local (en `localhost:27017`)
 ---
+
+
 ## Cómo correr el proyecto
 ```bash
 # Clonar el repositorio
@@ -78,5 +86,44 @@ target/
 # OS
 .DS_Store
 Thumbs.db
+
+
 # Lombok
 lombok.config
+
+```
+## Explicación de las Pruebas y para qué Sirven
+
+Este proyecto incluye **tests unitarios** y **tests de integración**:
+
+### 1. Tests Unitarios
+
+- **Ubicación:** `src/test/java/com/example/productos/service` (o en controladores con mocks).
+- **Tecnologías:** **JUnit 5** y **Mockito**.
+- **Propósito:**
+  - Verificar la **lógica de negocio** y **controladores** **sin** dependencia real de la base de datos.
+  - Simulan (`mock`) el repositorio para aislar la funcionalidad.
+- **Cómo correrlos:**
+  ```bash
+  mvn test
+
+### 2. Tests de Integración
+
+- **Ubicación**: `src/test/java/com/example/productos/controller`
+- **Tecnología**: **WebTestClient**, que realiza llamadas reales a la aplicación levantada en un puerto aleatorio.
+- **Propósito**:
+  - Probar el **API REST** en condiciones **similares a producción**, incluyendo conexión a MongoDB (local, remoto o Docker).
+  - Revisar la **seguridad** (HTTP Basic), endpoints CRUD y la internacionalización.
+- **Cómo correrlos**:
+  ```bash
+  mvn test
+
+### 3. Docker y el Pipeline
+
+**instalé Docker** para integrar un pipeline (por ejemplo, en **GitHub Actions**), puedo **correr contenedores** de Mongo y la aplicación, o usar **Testcontainers**.
+
+Ajusto mi archivo `docker-compose.yml` si deseo **levantar mongo y la aplicación** simultáneamente en contenedores.
+
+En **GitHub Actions**, defino un archivo `.github/workflows/test.yml` que ejecuta:
+```bash
+./mvnw test
